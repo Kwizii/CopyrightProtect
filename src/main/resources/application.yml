@@ -1,0 +1,28 @@
+server:
+  port: 80
+  servlet:
+    context-path: /api #根路由地址
+
+# DataSource Config
+spring:
+  application:
+    name: CopyrightProtect
+  servlet:
+    multipart:
+      max-file-size: 100GB
+      max-request-size: 100GB
+  datasource:
+    url: jdbc:mysql://10.1.19.19:3306/copyright_protect?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123123
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+
+springdoc:
+  #  packages-to-scan: edu.bistu.copyright.protect.controller
+  swagger-ui:
+    path: /doc
