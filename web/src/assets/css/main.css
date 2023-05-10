@@ -23,7 +23,7 @@ a {
 
 .content-box {
     position: absolute;
-    left: 210px;
+    left: 200px;
     right: 0;
     top: 70px;
     bottom: 0;
@@ -94,9 +94,9 @@ a {
 
 /*BaseForm*/
 
-.form-box {
-    width: 600px;
-}
+/*.form-box {*/
+/*    width: 600px;*/
+/*}*/
 
 .form-box .line {
     text-align: center;

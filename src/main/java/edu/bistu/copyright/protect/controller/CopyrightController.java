@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Tag(name = "版权控制器")
 @Controller
-@RequestMapping("/copy")
+@RequestMapping("/copyright")
 public class CopyrightController {
     private final ICopyrightService copyrightService;
 
@@ -36,6 +36,6 @@ public class CopyrightController {
     public ResponseEntity<IPage<Copyright>> page(@PathVariable Integer index,
                                                  @PathVariable Integer limit,
                                                  @Nullable CopyrightPageQuery query) {
-        return ResponseEntity.ok(copyrightService.page(index, limit, query));
+        return ResponseEntity.ok(copyrightService. page(index, limit, query));
     }
 }

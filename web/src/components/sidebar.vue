@@ -49,43 +49,52 @@
     </div>
 </template>
 
-<script setup>
-import {computed} from 'vue';
+<script>
 import {useSidebarStore} from '@/store/sidebar';
 import {useRoute} from 'vue-router';
+import {defineComponent} from "vue";
 
-const items = [
-    {
-        icon: 'Odometer',
-        index: '/dashboard',
-        title: '系统首页',
+export default defineComponent({
+    name: 'VSidebar',
+    data() {
+        return {
+            items: [
+                {
+                    icon: 'Odometer',
+                    index: '/copyright',
+                    title: '版权列表',
+                },
+                {
+                    icon: 'Calendar',
+                    index: '/table',
+                    title: '常用表格',
+                }, {
+                    icon: 'Edit',
+                    index: '/form',
+                    title: '基本表单',
+                }, {
+                    icon: 'Edit',
+                    index: '/upload',
+                    title: '文件上传',
+                },
+                {
+                    icon: 'PieChart',
+                    index: '/charts',
+                    title: 'schart图表',
+                },
+            ],
+            route: useRoute(),
+            sidebar: useSidebarStore(),
+        };
     },
-    {
-        icon: 'Calendar',
-        index: '/table',
-        title: '常用表格',
-    }, {
-        icon: 'Edit',
-        index: '/form',
-        title: '基本表单',
-    }, {
-        icon: 'Edit',
-        index: '/upload',
-        title: '文件上传',
+    computed: {
+        onRoutes() {
+            return this.route.path;
+        }
     },
-    {
-        icon: 'PieChart',
-        index: '/charts',
-        title: 'schart图表',
-    },
-];
-
-const route = useRoute();
-const onRoutes = computed(() => {
-    return route.path;
 });
 
-const sidebar = useSidebarStore();
+
 </script>
 
 <style scoped>
@@ -103,10 +112,12 @@ const sidebar = useSidebarStore();
 }
 
 .sidebar-el-menu:not(.el-menu--collapse) {
-    width: 210px;
+    width: 200px;
 }
 
 .sidebar > ul {
     height: 100%;
 }
+
+
 </style>

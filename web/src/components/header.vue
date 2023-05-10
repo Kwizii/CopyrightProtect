@@ -9,7 +9,10 @@
                 <Fold/>
             </el-icon>
         </div>
-        <div class="logo">区块链数字水印版权保护</div>
+        <div class="logo">
+            <img style="height: 30px;" src="@/assets/img/logo.png"/>
+            <span>区块链数字水印版权保护</span>
+        </div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 用户名下拉菜单 -->
@@ -30,36 +33,42 @@
         </div>
     </div>
 </template>
-<script setup>
-import {onMounted} from 'vue';
+<script>
+import {defineComponent} from 'vue';
 import {useSidebarStore} from '@/store/sidebar';
 import {useRouter} from 'vue-router';
 
-// const username = localStorage.getItem('ms_username');
-const username = "TEST";
-
-const sidebar = useSidebarStore();
-// 侧边栏折叠
-const collapseChange = () => {
-    sidebar.handleCollapse();
-};
-
-onMounted(() => {
-    if (document.body.clientWidth < 1200) {
-        collapseChange();
+export default defineComponent({
+    name: 'VHeader',
+    data() {
+        return {
+            // username: localStorage.getItem('ms_username'),
+            username: 'TEST',
+            sidebar: useSidebarStore(),
+            // 用户名下拉菜单选择事件
+            router: useRouter(),
+        };
+    },
+    mounted() {
+        if (document.body.clientWidth < 1200) {
+            this.collapseChange();
+        }
+    },
+    methods: {
+        collapseChange() {
+            this.sidebar.handleCollapse();
+        },
+        handleCommand(command) {
+            if (command === 'loginout') {
+                localStorage.removeItem('ms_username');
+                this.router.push('/login');
+            } else if (command === 'user') {
+                this.router.push('/user');
+            }
+        },
     }
-});
+})
 
-// 用户名下拉菜单选择事件
-const router = useRouter();
-const handleCommand = (command) => {
-    if (command === 'loginout') {
-        localStorage.removeItem('ms_username');
-        router.push('/login');
-    } else if (command === 'user') {
-        router.push('/user');
-    }
-};
 </script>
 <style scoped>
 .header {
@@ -83,8 +92,12 @@ const handleCommand = (command) => {
 
 .header .logo {
     float: left;
-    width: 250px;
+    display: flex;
+    align-items: center;
     line-height: 70px;
+}
+.header .logo *{
+    margin: auto 5px;
 }
 
 .header-right {

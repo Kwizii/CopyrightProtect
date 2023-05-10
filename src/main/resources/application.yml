@@ -3,6 +3,10 @@ server:
   servlet:
     context-path: /api #根路由地址
 
+# 文件上传地址
+upload:
+  path: "C:\\temp"
+
 # DataSource Config
 spring:
   application:
