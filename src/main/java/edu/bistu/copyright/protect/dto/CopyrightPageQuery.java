@@ -1,4 +1,4 @@
-package edu.bistu.copyright.protect.dto.query;
+package edu.bistu.copyright.protect.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;

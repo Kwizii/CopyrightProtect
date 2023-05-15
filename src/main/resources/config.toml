@@ -12,7 +12,7 @@ disableSsl = "false"                        # Communication with nodes without S
 [network]
 messageTimeout = "10000"
 defaultGroup = "group0"
-peers = ["172.29.222.127:20200", "172.29.222.127:20201", "172.29.222.127:20202", "172.29.222.127:20203"]    # The peer list to connect
+peers = ["bc:20200", "bc:20201", "bc:20202", "bc:20203"]    # The peer list to connect
 
 
 [account]

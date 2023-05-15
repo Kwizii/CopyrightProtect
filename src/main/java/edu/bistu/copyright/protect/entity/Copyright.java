@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -20,6 +23,9 @@ import java.time.LocalDateTime;
  * @since 2023-05-08
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Schema(description = "图像版权对象")
 public class Copyright implements Serializable {
 
@@ -38,10 +44,10 @@ public class Copyright implements Serializable {
     private String chainAddress;
 
     @Schema(description = "原文件存储地址")
-    private String originFileAddress;
+    private String originFileUrl;
 
     @Schema(description = "水印文件地址")
-    private String watermarkedFileAddress;
+    private String watermarkFileUrl;
 
     @Schema(description = "相关描述")
     private String description;

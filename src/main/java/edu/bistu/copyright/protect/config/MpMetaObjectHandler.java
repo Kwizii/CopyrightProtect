@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 @Component
-public class MyMetaObjectHandler implements MetaObjectHandler {
+public class MpMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
