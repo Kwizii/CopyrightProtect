@@ -2,9 +2,11 @@
     <v-header/>
     <v-sidebar/>
     <div class="content-box" :class="{ 'content-collapse': sidebar.collapse }">
-        <div class="content">
-            <router-view v-slot="{ Component }"></router-view>
-        </div>
+        <el-scrollbar>
+            <div class="content">
+                <router-view v-slot="{ Component }"></router-view>
+            </div>
+        </el-scrollbar>
     </div>
 </template>
 <script setup>

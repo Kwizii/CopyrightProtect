@@ -1,8 +1,9 @@
 import {createRouter, createWebHistory} from 'vue-router'
-import Home from '../views/home.vue';
+import Main from '../views/Main.vue';
+import NotFound from '../views/404.vue';
 
 
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
@@ -11,8 +12,8 @@ export default createRouter({
         },
         {
             path: '/',
-            name: 'Home',
-            component: Home,
+            name: 'Main',
+            component: Main,
             children: [
                 {
                     path: '/copyright',
@@ -20,24 +21,9 @@ export default createRouter({
                     component: () => import('@/views/copyright.vue'),
                 },
                 {
-                    path: '/table',
-                    name: 'basetable',
-                    component: () => import('@/views/table.vue'),
-                },
-                {
-                    path: '/charts',
-                    name: 'basecharts',
-                    component: () => import('@/views/charts.vue'),
-                },
-                {
-                    path: '/form',
-                    name: 'baseform',
-                    component: () => import('@/views/form.vue'),
-                },
-                {
-                    path: '/tabs',
-                    name: 'tabs',
-                    component: () => import('@/views/tabs.vue'),
+                    path: '/identify',
+                    name: 'identify',
+                    component: () => import('@/views/Identify.vue'),
                 },
                 {
                     path: '/upload',
@@ -56,6 +42,13 @@ export default createRouter({
             name: '403',
             component: () => import('@/views/403.vue'),
         },
+        // 添加一个通配符路由，用于匹配所有未定义的路由
+        {
+            path: '/:catchAll(.*)',
+            name: 'NotFound',
+            component: NotFound
+        }
     ]
 })
 
+export default router;

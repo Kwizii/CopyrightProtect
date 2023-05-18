@@ -6,7 +6,11 @@ import edu.bistu.copyright.protect.util.HashUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.v3.BcosSDK;
 import org.fisco.bcos.sdk.v3.client.Client;
+import org.fisco.bcos.sdk.v3.client.protocol.response.BcosTransaction;
+import org.fisco.bcos.sdk.v3.client.protocol.response.BcosTransactionReceipt;
+import org.fisco.bcos.sdk.v3.codec.abi.FunctionReturnDecoder;
 import org.fisco.bcos.sdk.v3.codec.datatypes.generated.tuples.generated.Tuple1;
+import org.fisco.bcos.sdk.v3.codec.datatypes.generated.tuples.generated.Tuple4;
 import org.fisco.bcos.sdk.v3.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.v3.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.v3.model.CryptoType;
@@ -70,25 +74,33 @@ public class BcosSDKTest {
     public void storeCopy() throws ContractException {
         Client client = getClient();
         CryptoKeyPair keyPair = loadAccount("2b53a0e3f05295add92a4a75761eb56eb626c417e92b1a1bf4bc38e4959974c0");
-//        log.info(keyPair.getAddress());
-//        CopyrightRepository copyrightRepository = CopyrightRepository.deploy(client, keyPair);
-//        log.info(copyrightRepository.getContractAddress());
-//        log.info(copyrightRepository._owner());
-//        List<String> hashes = List.of(
-//                HashUtil.string2HashHex("1", HashType.MD5),
-//                HashUtil.string2HashHex("2", HashType.SHA1),
-//                HashUtil.string2HashHex("3", HashType.SHA256));
-//        TransactionReceipt transactionReceipt = copyrightRepository.requestStore(BigInteger.valueOf(1),
-//                "test",
-//                "ok",
-//                hashes,
-//                BigInteger.valueOf(Instant.now(Clock.system(ZoneId.of("Asia/Shanghai"))).getEpochSecond())
-//        );
-//        String copyAddress = transactionReceipt.getOutput();
-//        log.info("Address: {}, Length: {}", copyAddress, copyAddress.length());
-        CopyrightRepository copyrightRepository = CopyrightRepository.load("0xf5e297ed6556898b1fa58b352fce789e77eb156f", client, keyPair);
-        CopyrightRepository.CopyrightSol copyrightSol = copyrightRepository.getCopyright("0x00000000000000000000000066856f4874da130a868e0aac01454f4743db386b");
-//        CopyrightRepository.CopyrightSol copyrightSol = copyrightRepository.getCopyright(copyAddress);
-        log.info("CopyrightSol: {} {} {} {} {}", copyrightSol.id, copyrightSol.content, copyrightSol.description, copyrightSol.hashes, copyrightSol.createTime);
+        log.info("User Address: {}", keyPair.getAddress());
+        CopyrightRepository copyrightRepository = CopyrightRepository.deploy(client, keyPair);
+        log.info("Contract Address: {}", copyrightRepository.getContractAddress());
+        log.info("Contract Owner: {}", copyrightRepository._owner());
+        List<String> hashes = List.of(
+                HashUtil.string2HashHex("1", HashType.MD5),
+                HashUtil.string2HashHex("2", HashType.SHA1),
+                HashUtil.string2HashHex("3", HashType.SHA256));
+        TransactionReceipt transactionReceipt = copyrightRepository.requestStore(BigInteger.valueOf(1),
+                "test",
+                hashes,
+                BigInteger.valueOf(Instant.now(Clock.system(ZoneId.of("Asia/Shanghai"))).getEpochSecond())
+        );
+        log.info("ReceiptHash: {}\nTxHash: {}", transactionReceipt.getReceiptHash(), transactionReceipt.getTransactionHash());
+        CopyrightRepository.CopyrightSol copyrightSol = copyrightRepository.getCopyright(BigInteger.valueOf(1));
+        log.info("CopyrightSol: {} {} {} {}", copyrightSol.id, copyrightSol.content, copyrightSol.hashes, copyrightSol.createTime);
+    }
+
+    @Test
+    public void getCopy() {
+        Client client = getClient();
+        CryptoKeyPair keyPair = loadAccount("2b53a0e3f05295add92a4a75761eb56eb626c417e92b1a1bf4bc38e4959974c0");
+        log.info("User Address: {}", keyPair.getAddress());
+        BcosTransactionReceipt receipt = client.getTransactionReceipt("0xd0710266a03846425d0d156b5bcb4596b8ff470828a32d3a46d52a12c7920074", false);
+        TransactionReceipt transactionReceipt = receipt.getTransactionReceipt();
+        Tuple4<BigInteger, String, List<String>, BigInteger> storeInput = CopyrightRepository.getRequestStoreInput(transactionReceipt);
+        log.info("Parameters: {}", storeInput);
+        log.info("Block Number: {}", transactionReceipt.getBlockNumber());
     }
 }

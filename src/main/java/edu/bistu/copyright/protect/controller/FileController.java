@@ -2,6 +2,7 @@ package edu.bistu.copyright.protect.controller;
 
 import edu.bistu.copyright.protect.util.FileUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -34,8 +34,8 @@ public class FileController {
     private String uploadDir; // 文件上传路径，从配置文件中获取
 
     @Operation(description = "上传文件")
-    @PostMapping(value = "/file")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping(value = "/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadFile(@RequestPart("file") MultipartFile file) {
         try {
             // 获取文件类型
             String contentType = file.getContentType();
@@ -43,21 +43,6 @@ public class FileController {
             String fileName = UUID.randomUUID() + FileUtil.getFileExtension(contentType);
             Path savePath = Paths.get(uploadDir, fileName);
             Files.write(savePath, file.getBytes());
-            return ResponseEntity.ok(fileName);
-        } catch (IOException | IllegalArgumentException e) {
-            log.error("文件保存失败", e);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("文件保存失败");
-    }
-
-    @Operation(description = "上传图像base64编码保存图像")
-    @PostMapping(value = "/image", consumes = MediaType.TEXT_PLAIN_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestBody String data) {
-        try {
-            byte[] imageBytes = Base64.getDecoder().decode(data.substring(data.indexOf(",") + 1));
-            String fileName = UUID.randomUUID() + ".png"; // 生成唯一文件名
-            Path savePath = Paths.get(uploadDir, fileName);
-            Files.write(savePath, imageBytes);
             return ResponseEntity.ok(fileName);
         } catch (IOException | IllegalArgumentException e) {
             log.error("文件保存失败", e);

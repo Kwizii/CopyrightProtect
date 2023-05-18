@@ -4,23 +4,24 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import edu.bistu.copyright.protect.common.ServiceException;
+import edu.bistu.copyright.protect.contract.CopyrightRepository;
 import edu.bistu.copyright.protect.dto.UserCreateDTO;
 import edu.bistu.copyright.protect.dto.UserLoginDTO;
 import edu.bistu.copyright.protect.entity.User;
 import edu.bistu.copyright.protect.mapper.UserMapper;
-import edu.bistu.copyright.protect.service.IContractService;
 import edu.bistu.copyright.protect.service.IUserService;
+import edu.bistu.copyright.protect.util.FiscoClient;
 import edu.bistu.copyright.protect.vo.UserVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.fisco.bcos.sdk.v3.client.Client;
 import org.fisco.bcos.sdk.v3.crypto.CryptoSuite;
 import org.fisco.bcos.sdk.v3.crypto.keypair.CryptoKeyPair;
 import org.fisco.bcos.sdk.v3.model.CryptoType;
 import org.fisco.bcos.sdk.v3.transaction.model.exception.ContractException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 /**
  * <p>
@@ -30,17 +31,23 @@ import java.io.IOException;
  * @author Chanvo
  * @since 2023-05-08
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
-    private final IContractService contractService;
+
+    private final Client client = FiscoClient.instance();
 
     @Override
-    public Boolean createUser(UserCreateDTO input) throws ContractException, IOException {
+    public Boolean createUser(UserCreateDTO input) throws ContractException {
+        if (getByUsername(input.getUsername()) != null) {
+            throw new ServiceException("用户已存在");
+        }
         CryptoSuite cryptoSuite = new CryptoSuite(CryptoType.ECDSA_TYPE);
         CryptoKeyPair keyPair = cryptoSuite.getCryptoKeyPair();
-        String contractAddr = contractService.deployContract(keyPair.getHexPrivateKey());
+        CopyrightRepository repository = CopyrightRepository.deploy(client, keyPair);
+        String contractAddr = repository.getContractAddress();
         String hashpw = BCrypt.hashpw(input.getPassword(), BCrypt.gensalt());
         User user = User.builder()
                 .username(input.getUsername())
@@ -50,6 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 .userChainAddress(keyPair.getAddress())
                 .contractChainAddress(contractAddr)
                 .build();
+        log.info("New user: {}", user);
         return this.save(user);
     }
 
@@ -66,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                     StpUtil.getTokenValue()
             ));
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        throw new ServiceException("用户名或密码错误");
     }
 
     @Override

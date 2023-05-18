@@ -1,35 +1,24 @@
 <template>
   <div class="container">
-    <el-row justify="center">
-      <el-col :lg="13" :md="16" :sm="19" :xs="22">
-        <el-form ref="formRef" size="large" :rules="rules" :model="form" label-width="150px">
+    <el-row justify="center" :gutter="10">
+      <el-col :lg="6" :md="8" :sm="8" class="col-left">
+        <el-form ref="formRef"
+                 class="identify-form"
+                 size="large"
+                 label-position="top"
+                 :rules="rules"
+                 :model="form">
           <el-form-item>
             <el-alert type="info" show-icon :closable="false" style="line-height: 100%;">
-              <p>上传多张图片时，对每张图片添加相同的图像标题和水印内容。</p>
+              <p>上传多张图片时，提取每张图像的水印内容。</p>
             </el-alert>
           </el-form-item>
-          <el-form-item label="图像标题" prop="title">
-            <el-input type="textarea"
-                      placeholder="留空为上传时间"
-                      :autosize="{minRows:2,}"
-                      v-model="form.title"
-                      clearable/>
-          </el-form-item>
-          <el-form-item label="水印内容" prop="content">
-            <el-input type="textarea"
-                      placeholder="仅支持英文，留空为用户名"
-                      :autosize="{minRows:2,}"
-                      v-model="form.content"
-                      clearable
-            />
-          </el-form-item>
-          <el-form-item label="上传图像(可以多张)" prop="fileList">
+          <el-form-item label="上传待鉴定图像（可多张）" prop="fileList">
             <el-upload
                 class="upload-demo"
                 ref="imageRef"
                 list-type="picture-card"
                 drag
-                multiple
                 accept=".jpg,.png,.jpeg"
                 :auto-upload="false"
                 :on-preview="handlePreview"
@@ -55,10 +44,33 @@
                 :z-index="3000"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="onSubmit(formRef)">图像版权存证</el-button>
-            <el-button @click="onReset(formRef,imageRef)">清空</el-button>
+            <el-button type="primary" @click="onSubmit(formRef)">图像版权水印鉴定</el-button>
           </el-form-item>
         </el-form>
+      </el-col>
+      <el-col :lg="18" :md="16" :sm="14">
+        <el-carousel
+            v-loading="loading"
+            trigger="click"
+            :autoplay="false">
+          <el-carousel-item v-if="!watermarks.length">
+            <h2>提取后的水印显示在此处</h2>
+          </el-carousel-item>
+          <el-carousel-item v-for="(watermark,idx) in watermarks">
+            <el-image
+                alt="点击查看大图"
+                hide-on-click-modal
+                preview-teleported
+                fit="cover"
+                :initial-index="idx"
+                :src="watermark"
+                :preview-src-list="watermarks">
+              <template #placeholder>
+                <div class="image-slot">Loading<span class="dot">...</span></div>
+              </template>
+            </el-image>
+          </el-carousel-item>
+        </el-carousel>
       </el-col>
     </el-row>
   </div>
@@ -68,10 +80,11 @@
 import {defineComponent, ref} from 'vue';
 import {ElMessage} from 'element-plus';
 import request from "@/utils/request";
-import {now} from "@/utils/common";
+import {UploadFilled} from "@element-plus/icons-vue";
 
 export default defineComponent({
-  name: 'upload',
+  name: 'identify',
+  components: {UploadFilled},
   setup() {
     return {
       formRef: ref(),
@@ -82,20 +95,14 @@ export default defineComponent({
     return {
       rules: {
         fileList: [{required: true, min: 1, type: 'array', message: '请上传图像', trigger: 'blur'}],
-        content: [{
-          pattern: /^[a-zA-Z0-9\s\-_.!?,']+$/,
-          type: 'string',
-          message: '仅支持英文字母、英文字符、数字的水印内容',
-          trigger: 'blur'
-        }]
       },
       form: {
-        title: '',
-        content: '',
         fileList: [],
       },
       viewerVisible: false,
-      previewIdx: 0
+      previewIdx: 0,
+      watermarks: [],
+      loading: false,
     };
   },
   methods: {
@@ -134,45 +141,73 @@ export default defineComponent({
       if (!formRef) return;
       formRef.validate(async (valid) => {
         if (valid) {
-          const username = localStorage.getItem("username");
+          this.loading = true;
           const events = [];
           for (const fileIdx in this.form.fileList) {
             const file = this.form.fileList[fileIdx];
-            const copyright = {
-              title: this.form.title === "" ? now() : this.form.title,
-              content: this.form.content === "" ? username : this.form.content,
-              url: file.uploadUrl,
-              name: file.name
-            }
-            events.push(this.uploadCopyright(copyright));
+            events.push(this.identifyCopyright(file.uploadUrl));
           }
-          await Promise.all(events);
-          this.onReset(this.formRef, this.imageRef);
+          this.watermarks = await Promise.all(events);
+          this.loading = false;
         } else {
           return false;
         }
       });
     },
-    async uploadCopyright(copyright) {
+    async identifyCopyright(url) {
       try {
-        const data = request.post(`/copyright/create`, copyright, {
-          headers: {
-            'Content-Type': 'application/json'
+        return request.get(`/copyright/watermark`, {
+          params: {
+            url: url
           }
         });
-        ElMessage.success(`${copyright.name}的版权存证成功`);
-        return data;
       } catch (err) {
-        ElMessage.error(`${copyright.name}存证失败，${err.response.data}`);
+        ElMessage.error(`水印提取失败，${err.response.data}`);
       }
-    },
-    // 重置
-    onReset(formRef, imageRef) {
-      if (!formRef) return;
-      imageRef.clearFiles();
-      formRef.resetFields();
-    },
+    }
   },
 })
 ;
 </script>
+<style>
+.identify-form .el-form-item__error {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.identify-form .el-form-item__label {
+  text-align: center !important;
+}
+
+.identify-form .el-form-item__content * {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.el-carousel__container {
+  text-align: center;
+  height: 100%;
+}
+
+.el-image {
+  width: 100%;
+}
+
+.el-carousel__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.el-carousel__item > .el-image {
+  height: 100%;
+}
+
+.el-carousel {
+  height: 100%;
+}
+
+.col-left {
+  border-right: solid 1px rgb(220, 223, 230);
+}
+</style>

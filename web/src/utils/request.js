@@ -1,31 +1,37 @@
 import axios from 'axios';
+import router from "@/router";
+import {apiRoot, token} from "@/store/meta";
 
-const service = axios.create({
-    timeout: 5000
+const request = axios.create({
+    baseURL: apiRoot,
+    timeout: 15000
 });
 
-service.interceptors.request.use(
-    (config) => {
+request.interceptors.request.use(config => {
+        const accessToken = token();
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+        }
         return config;
     },
-    (error) => {
+    error => {
         console.log(error);
-        return Promise.reject();
+        return Promise.reject(error);
     }
 );
 
-service.interceptors.response.use(
-    (response) => {
-        if (response.status === 200) {
-            return response;
-        } else {
-            Promise.reject();
-        }
+request.interceptors.response.use(response => {
+        return response.data;
     },
-    (error) => {
+    error => {
         console.log(error);
-        return Promise.reject();
+        if (error.response) {
+            if (error.response.status === 401) {
+                router.push('/login');
+            }
+        }
+        return Promise.reject(error);
     }
 );
 
-export default service;
+export default request;

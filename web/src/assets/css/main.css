@@ -12,6 +12,38 @@ body,
     overflow: hidden;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
+.el-upload-dragger {
+    height: 100% !important;
+}
+
+.el-upload--picture-card {
+    --el-upload-picture-card-size: 210px !important;
+}
+
+.el-upload-list--picture-card {
+    --el-upload-list-picture-card-size: 210px !important;
+}
+
+.center {
+    text-align: center;
+}
+
+.el-scrollbar__thumb {
+    opacity: 0.7 !important;
+}
+
+.el-divider__text {
+    padding: 0 10px !important;
+}
+
+.el-divider--horizontal {
+    margin: 20px 0 !important;
+}
+
 body {
     font-family: 'PingFang SC', "Helvetica Neue", Helvetica, "microsoft yahei", arial, STHeiTi, sans-serif;
 }
@@ -19,7 +51,6 @@ body {
 a {
     text-decoration: none
 }
-
 
 .content-box {
     position: absolute;
@@ -70,7 +101,7 @@ a {
     margin-bottom: 20px;
 }
 
-.el-button+.el-tooltip {
+.el-button + .el-tooltip {
     margin-left: 10px;
 }
 
@@ -92,11 +123,13 @@ a {
     opacity: 0;
 }
 
-/*BaseForm*/
-
-/*.form-box {*/
-/*    width: 600px;*/
-/*}*/
+.op-pop {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: none !important;
+    min-width: 0 !important;
+}
 
 .form-box .line {
     text-align: center;
@@ -124,6 +157,7 @@ a {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
 .el-sub-menu [class^=el-icon-] {
     vertical-align: middle;
     margin-right: 5px;
@@ -132,6 +166,6 @@ a {
     font-size: 18px;
 }
 
-[hidden]{
+[hidden] {
     display: none !important;
 }

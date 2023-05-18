@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.fisco.bcos.sdk.v3.transaction.model.exception.ContractException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;

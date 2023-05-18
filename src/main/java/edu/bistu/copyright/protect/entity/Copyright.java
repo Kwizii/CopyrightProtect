@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 @Schema(description = "图像版权对象")
 public class Copyright implements Serializable {
 
-    //    @Serial
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -40,8 +39,8 @@ public class Copyright implements Serializable {
     @Schema(description = "用户id")
     private Integer userId;
 
-    @Schema(description = "区块链地址")
-    private String chainAddress;
+    @Schema(description = "存证交易哈希")
+    private String txHash;
 
     @Schema(description = "原文件存储地址")
     private String originFileUrl;
@@ -49,22 +48,13 @@ public class Copyright implements Serializable {
     @Schema(description = "水印文件地址")
     private String watermarkFileUrl;
 
-    @Schema(description = "相关描述")
-    private String description;
+    @Schema(description = "图像标题")
+    private String title;
 
     @Schema(description = "水印内容")
     private String content;
 
-    @Schema(description = "MD5哈希")
-    private String md5Hash;
-
-    @Schema(description = "SHA1哈希")
-    private String sha1Hash;
-
-    @Schema(description = "SHA256哈希")
-    private String sha256Hash;
-
     @TableField(fill = FieldFill.INSERT)
-    @Schema(description = "创建时间")
+    @Schema(description = "数据库创建时间")
     private LocalDateTime createTime;
 }

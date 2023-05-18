@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import edu.bistu.copyright.protect.dto.CopyrightPageQuery;
 import edu.bistu.copyright.protect.dto.CopyrightSaveDTO;
 import edu.bistu.copyright.protect.entity.Copyright;
+import edu.bistu.copyright.protect.vo.CopyrightVO;
 
 /**
  * <p>
@@ -20,5 +21,9 @@ public interface ICopyrightService extends IService<Copyright> {
 
     Copyright create(Integer uid, CopyrightSaveDTO input);
 
-    Copyright getByChainAddress(Integer uid, String chainAddress);
+    Boolean del(Integer uid, Integer id);
+
+    CopyrightVO getByTxHash(Integer uid, String txHash);
+
+    String getWatermarkBase64(String url);
 }
