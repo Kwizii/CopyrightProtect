@@ -49,8 +49,8 @@ export default defineComponent({
     return {
       router: useRouter(),
       params: {
-        username: '1',
-        password: '1'
+        username: 'admin',
+        password: '123456'
       },
       rules: {
         username: [{required: true, message: '请输入用户名', trigger: 'blur'}],

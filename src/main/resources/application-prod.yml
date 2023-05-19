@@ -1,0 +1,53 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api #根路由地址
+
+# 文件上传地址
+upload:
+  path: "C:\\temp"
+
+# DataSource Config
+spring:
+  application:
+    name: CopyrightProtect
+  servlet:
+    multipart:
+      max-file-size: 100GB
+      max-request-size: 100GB
+  datasource:
+    url: jdbc:mysql://10.1.19.146:3306/copyright_protect?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123123
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+
+springdoc:
+  packages-to-scan: edu.bistu.copyright.protect.controller
+  swagger-ui:
+    path: /doc
+
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: Authorization
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 2592000
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: true
+  # token风格
+  token-style: uuid
+  token-prefix: Bearer
+  # 是否输出操作日志
+  is-log: false
+
+fisco:
+  config-file: fisco-config-prod.xml
+  default-group: group0

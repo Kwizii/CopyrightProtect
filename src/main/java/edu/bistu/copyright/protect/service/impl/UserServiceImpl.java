@@ -11,7 +11,6 @@ import edu.bistu.copyright.protect.dto.UserLoginDTO;
 import edu.bistu.copyright.protect.entity.User;
 import edu.bistu.copyright.protect.mapper.UserMapper;
 import edu.bistu.copyright.protect.service.IUserService;
-import edu.bistu.copyright.protect.util.FiscoClient;
 import edu.bistu.copyright.protect.vo.UserVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +36,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
 
-    private final Client client = FiscoClient.instance();
+    private final Client client;
 
     @Override
     public Boolean createUser(UserCreateDTO input) throws ContractException {

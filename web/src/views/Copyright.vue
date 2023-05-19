@@ -63,7 +63,11 @@
               <div class="center">
                 <el-image :src="formatUrl(bcInfo.originFileUrl)"
                           :initial-index="0"
-                          :preview-src-list="[formatUrl(bcInfo.originFileUrl),formatUrl(bcInfo.watermarkFileUrl)]"/>
+                          :preview-src-list="[formatUrl(bcInfo.originFileUrl),formatUrl(bcInfo.watermarkFileUrl)]">
+                  <template #placeholder>
+                    <div class="image-slot">Loading<span class="dot">...</span></div>
+                  </template>
+                </el-image>
               </div>
             </template>
           </el-popover>
@@ -85,7 +89,11 @@
               <div class="center">
                 <el-image :src="formatUrl(bcInfo.watermarkFileUrl)"
                           :initial-index="1"
-                          :preview-src-list="[formatUrl(bcInfo.originFileUrl),formatUrl(bcInfo.watermarkFileUrl)]"/>
+                          :preview-src-list="[formatUrl(bcInfo.originFileUrl),formatUrl(bcInfo.watermarkFileUrl)]">
+                  <template #placeholder>
+                    <div class="image-slot">Loading<span class="dot">...</span></div>
+                  </template>
+                </el-image>
               </div>
             </template>
           </el-popover>

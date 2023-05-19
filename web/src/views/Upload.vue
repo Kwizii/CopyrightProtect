@@ -147,6 +147,7 @@ export default defineComponent({
             events.push(this.uploadCopyright(copyright));
           }
           await Promise.all(events);
+          ElMessage.success(`版权存证成功`);
           this.onReset(this.formRef, this.imageRef);
         } else {
           return false;
@@ -155,13 +156,11 @@ export default defineComponent({
     },
     async uploadCopyright(copyright) {
       try {
-        const data = request.post(`/copyright/create`, copyright, {
+        return request.post(`/copyright/create`, copyright, {
           headers: {
             'Content-Type': 'application/json'
           }
         });
-        ElMessage.success(`${copyright.name}的版权存证成功`);
-        return data;
       } catch (err) {
         ElMessage.error(`${copyright.name}存证失败，${err.response.data}`);
       }

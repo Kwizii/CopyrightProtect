@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+    <bean id="defaultConfigProperty" class="org.fisco.bcos.sdk.v3.config.model.ConfigProperty">
+        <property name="cryptoMaterial">
+            <map>
+                <entry key="certPath" value="conf-dev"/>
+                <entry key="useSMCrypto" value="false"/>
+                <entry key="disableSsl" value="false"/>
+            </map>
+        </property>
+        <property name="network">
+            <map>
+                <entry key="peers">
+                    <list>
+                        <value>bc:20200</value>
+                        <value>bc:20201</value>
+                        <value>bc:20201</value>
+                        <value>bc:20201</value>
+                    </list>
+                </entry>
+            </map>
+        </property>
+        <property name="account">
+            <map>
+                <entry key="keyStoreDir" value="account"/>
+                <entry key="accountAddress" value=""/>
+                <entry key="accountFileFormat" value="pem"/>
+                <entry key="password" value=""/>
+                <entry key="accountFilePath" value=""/>
+            </map>
+        </property>
+        <property name="threadPool">
+            <map>
+                <entry key="channelProcessorThreadSize" value="16"/>
+                <entry key="receiptProcessorThreadSize" value="16"/>
+                <entry key="maxBlockingQueueSize" value="102400"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="defaultConfigOption" class="org.fisco.bcos.sdk.v3.config.ConfigOption">
+        <constructor-arg name="configProperty" ref="defaultConfigProperty"/>
+    </bean>
+
+    <bean id="bcosSDK" class="org.fisco.bcos.sdk.v3.BcosSDK">
+        <constructor-arg name="configOption" ref="defaultConfigOption"/>
+    </bean>
+</beans>

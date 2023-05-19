@@ -1,5 +1,5 @@
-export const apiRoot = "http://localhost/api";
-export const srcRoot = "http://localhost:8080/";
+export const apiRoot = "http://10.1.19.146/api";
+export const srcRoot = "http://10.1.19.146:8088/";
 
 const userKey = "user";
 const userNameKey = "username";

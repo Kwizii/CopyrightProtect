@@ -14,7 +14,6 @@ import edu.bistu.copyright.protect.entity.User;
 import edu.bistu.copyright.protect.mapper.CopyrightMapper;
 import edu.bistu.copyright.protect.service.ICopyrightService;
 import edu.bistu.copyright.protect.service.IUserService;
-import edu.bistu.copyright.protect.util.FiscoClient;
 import edu.bistu.copyright.protect.util.HashUtil;
 import edu.bistu.copyright.protect.util.WatermarkUtil;
 import edu.bistu.copyright.protect.vo.CopyrightVO;
@@ -62,7 +61,7 @@ public class CopyrightServiceImpl extends ServiceImpl<CopyrightMapper, Copyright
     private String filePath;
 
     private final IUserService userService;
-    private final Client client = FiscoClient.instance();
+    private final Client client;
 
     private CryptoKeyPair getKeypair(String privateKey) {
         CryptoSuite cryptoSuite = new CryptoSuite(CryptoType.ECDSA_TYPE);
